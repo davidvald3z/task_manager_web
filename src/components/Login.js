@@ -25,7 +25,7 @@ const Login = () => {
 
   return (
     <div className="form-container">
-      <h2>Login</h2>
+      <h2>Iniciar Sesión</h2>
       <form onSubmit={handleSubmit}>
         <input
           type="email"
@@ -41,9 +41,9 @@ const Login = () => {
           onChange={(e) => setPassword(e.target.value)}
           required
         />
-        <button type="submit">Login</button>
+        <button type="submit">Ingresar</button>
         {error && <p className="error">{error}</p>}
-        <a className="link" href="/signup">Don't have an account? Sign Up</a>
+        <a className="link" href="/signup">¿Aun no está registrado? Registrarse</a>
       </form>
     </div>
   );
