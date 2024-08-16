@@ -42,6 +42,10 @@
   color: white; /* Opcional: color de texto */
 }
 
+.bg-navy {
+  background-color: #001f3f; /* Azul marino */
+  color: white;
+}
 
 
 @keyframes App-logo-spin {

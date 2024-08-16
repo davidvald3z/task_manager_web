@@ -13,8 +13,17 @@ const Login = () => {
     event.preventDefault();
     try {
       const response = await axios.post('http://localhost:3000/auth/sign_in', { email, password });
-      console.log('Login Success:', response.data);
-      navigate('/main');
+      
+      // Guardar los encabezados de autenticación en el localStorage
+      const token = response.headers['access-token'];
+      const client = response.headers['client'];
+      const uid = response.headers['uid'];
+
+      localStorage.setItem('access-token', token);
+      localStorage.setItem('client', client);
+      localStorage.setItem('uid', uid);
+
+      navigate('/');
     } catch (error) {
       console.error('Login Error:', error.response.data);
       setError('Invalid email or password');
