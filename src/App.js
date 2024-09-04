@@ -1,11 +1,11 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import SignUp from './components/SignUp';    // Asegúrate de tener este componente creado
-import Login from './components/Login';      // Asegúrate de tener este componente creado
+import SignUp from './components/SignUp';
+import Login from './components/Login';
 import MainScreen from './components/MainScreen';
 import PrivateRoute from './components/PrivateRoute';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import './styles/App.css'; // Asegúrate de importar tu archivo CSS
+import './styles/App.css';
 import Branches from './components/Branches';
 
 const App = () => {

@@ -8,7 +8,9 @@ const Branches = () => {
   const [branches, setBranches] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
-  const [newBranch, setNewBranch] = useState({ name: '', address: '' });
+  const [editMode, setEditMode] = useState(false);
+  const [selectedBranch, setSelectedBranch] = useState(null);
+  const [branchData, setBranchData] = useState({ name: '', address: '' });
 
   useEffect(() => {
     const fetchBranches = async () => {
@@ -25,12 +27,16 @@ const Branches = () => {
     fetchBranches();
   }, []);
 
-  const handleModalClose = () => setShowModal(false);
+  const handleModalClose = () => {
+    setShowModal(false);
+    setEditMode(false);
+    setBranchData({ name: '', address: '' });
+  };
   const handleModalShow = () => setShowModal(true);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setNewBranch((prevBranch) => ({
+    setBranchData((prevBranch) => ({
       ...prevBranch,
       [name]: value,
     }));
@@ -38,12 +44,28 @@ const Branches = () => {
 
   const handleAddBranch = async () => {
     try {
-      const response = await axios.post('http://localhost:3000/api/v1/branches', newBranch);
+      const response = await axios.post('http://localhost:3000/api/v1/branches', branchData);
       setBranches([...branches, response.data]);
-      setNewBranch({ name: '', address: '' });
       handleModalClose();
     } catch (error) {
       console.error('Error al agregar la sucursal:', error);
+    }
+  };
+
+  const handleEditBranch = (branch) => {
+    setSelectedBranch(branch);
+    setBranchData({ name: branch.name, address: branch.address });
+    setEditMode(true);
+    handleModalShow();
+  };
+
+  const handleUpdateBranch = async () => {
+    try {
+      const response = await axios.put(`http://localhost:3000/api/v1/branches/${selectedBranch.id}`, branchData);
+      setBranches(branches.map(branch => (branch.id === selectedBranch.id ? response.data : branch)));
+      handleModalClose();
+    } catch (error) {
+      console.error('Error al actualizar la sucursal:', error);
     }
   };
 
@@ -73,7 +95,7 @@ const Branches = () => {
                         <td>{branch.name}</td>
                         <td>{branch.address}</td>
                         <td>
-                          <button className="btn bg-navy btn-sm">
+                          <button className="btn bg-navy btn-sm" onClick={() => handleEditBranch(branch)}>
                             <FaEdit />
                           </button>
                           <button className="btn bg-navy btn-sm ms-2">
@@ -98,7 +120,7 @@ const Branches = () => {
 
       <Modal show={showModal} onHide={handleModalClose}>
         <Modal.Header closeButton>
-          <Modal.Title>Nueva Sucursal</Modal.Title>
+          <Modal.Title>{editMode ? 'Editar Sucursal' : 'Nueva Sucursal'}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Form>
@@ -107,7 +129,7 @@ const Branches = () => {
               <Form.Control
                 type="text"
                 name="name"
-                value={newBranch.name}
+                value={branchData.name}
                 onChange={handleInputChange}
                 placeholder="Ingrese el nombre de la sucursal"
               />
@@ -117,7 +139,7 @@ const Branches = () => {
               <Form.Control
                 type="text"
                 name="address"
-                value={newBranch.address}
+                value={branchData.address}
                 onChange={handleInputChange}
                 placeholder="Ingrese la dirección de la sucursal"
               />
@@ -128,8 +150,8 @@ const Branches = () => {
           <Button variant="secondary" onClick={handleModalClose}>
             Cancelar
           </Button>
-          <Button variant="primary" onClick={handleAddBranch}>
-            Guardar
+          <Button variant="primary" onClick={editMode ? handleUpdateBranch : handleAddBranch}>
+            {editMode ? 'Actualizar' : 'Guardar'}
           </Button>
         </Modal.Footer>
       </Modal>
