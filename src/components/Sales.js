@@ -11,15 +11,23 @@ const Sales = () => {
   const [showModal, setShowModal] = useState(false);
   const [editMode, setEditMode] = useState(false);
   const [selectedMovement, setSelectedMovement] = useState(null);
-  const [movementData, setMovementData] = useState({ description: '', amount: '', movement_date: '', branch_id: '' });
+
+  // Inicializa el estado con movement_type como 'I'
+  const [movementData, setMovementData] = useState({ 
+    description: '', 
+    amount: '', 
+    movement_date: '', 
+    branch_id: '', 
+    movement_type: 'I'  // Siempre será 'I' para ventas
+  });
 
   useEffect(() => {
-    const fetchMovements = async () => {
+    const fetchSales = async () => {
       try {
-        const response = await axios.get('http://localhost:3000/api/v1/movements');
+        const response = await axios.get('http://localhost:3000/api/v1/sales');
         setMovements(response.data);
       } catch (error) {
-        console.error('Error al obtener los movimientos:', error);
+        console.error('Error al obtener las ventas:', error);
       } finally {
         setLoading(false);
       }
@@ -34,14 +42,14 @@ const Sales = () => {
       }
     };
 
-    fetchMovements();
-    fetchBranches(); // Obtener las sucursales al cargar la página
+    fetchSales();
+    fetchBranches();
   }, []);
 
   const handleModalClose = () => {
     setShowModal(false);
     setEditMode(false);
-    setMovementData({ description: '', amount: '', movement_date: '', branch_id: '' });
+    setMovementData({ description: '', amount: '', movement_date: '', branch_id: '', movement_type: 'I' }); // Resetea el formulario con movement_type 'I'
   };
 
   const handleModalShow = () => setShowModal(true);
@@ -56,6 +64,7 @@ const Sales = () => {
 
   const handleAddMovement = async () => {
     try {
+      // Al hacer la solicitud, movement_type siempre será 'I'
       const response = await axios.post('http://localhost:3000/api/v1/movements', movementData);
       setMovements([...movements, response.data]);
       handleModalClose();
@@ -66,13 +75,20 @@ const Sales = () => {
 
   const handleEditMovement = (movement) => {
     setSelectedMovement(movement);
-    setMovementData({ description: movement.description, amount: movement.amount, movement_date: movement.movement_date, branch_id: movement.branch_id });
+    setMovementData({ 
+      description: movement.description, 
+      amount: movement.amount, 
+      movement_date: movement.movement_date, 
+      branch_id: movement.branch_id, 
+      movement_type: 'I'  // Asegúrate de que al editar también sea 'I'
+    });
     setEditMode(true);
     handleModalShow();
   };
 
   const handleUpdateMovement = async () => {
     try {
+      // Al actualizar, también movement_type será 'I'
       const response = await axios.put(`http://localhost:3000/api/v1/movements/${selectedMovement.id}`, movementData);
       setMovements(movements.map(m => (m.id === selectedMovement.id ? response.data : m)));
       handleModalClose();
