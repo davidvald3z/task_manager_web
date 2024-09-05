@@ -8,6 +8,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import './styles/App.css';
 import Branches from './components/Branches';
 import Sales from './components/Sales';
+import Expenses from './components/Expenses';
 
 const App = () => {
   return (
@@ -20,6 +21,7 @@ const App = () => {
             <Route path="/" element={<PrivateRoute><MainScreen /></PrivateRoute>} />
             <Route path="/branches" element={<PrivateRoute><Branches /></PrivateRoute>} />
             <Route path="/sales" element={<PrivateRoute><Sales /></PrivateRoute>} />
+            <Route path="/expenses" element={<PrivateRoute><Expenses /></PrivateRoute>} />
           </Routes>
         </div>
       </div>
